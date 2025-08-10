@@ -1,0 +1,87 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Project — Parthian Contractors LTD</title>
+  <meta name="description" content="Project details by Parthian Contractors LTD." />
+  <link rel="preconnect" href="https://unpkg.com" crossorigin>
+  <link rel="preconnect" href="https://placehold.co" crossorigin>
+  <link rel="dns-prefetch" href="https://unpkg.com">
+  <link rel="dns-prefetch" href="https://placehold.co">
+  <style>
+    :root{--bg:#0b0b0b;--fg:#ffffff;--muted:#cfcfcf;--max:1000px;--pad:20px;--font: ui-sans-serif, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial}
+    html,body{margin:0;padding:0;background:var(--bg);color:var(--fg);font-family:var(--font)}
+    a{color:var(--fg);text-decoration:none}
+    .container{max-width:var(--max);margin:0 auto;padding:0 var(--pad)}
+    .topbar{display:flex;align-items:center;justify-content:space-between;padding:16px 0;border-bottom:1px solid #1a1a1a}
+    .brand{font-weight:600;letter-spacing:.08em;text-transform:uppercase}
+    nav ul{display:flex;gap:18px;list-style:none;margin:0;padding:0}
+    main{padding:32px 0}
+    h1{font-size:clamp(26px,6vw,40px);margin:0 0 12px}
+    .gallery{display:grid;grid-template-columns:1fr;gap:10px;margin-top:16px}
+    figure{margin:0;border:1px solid #1a1a1a;background:#0f0f0f}
+    figcaption{color:var(--muted);font-size:14px;padding:8px 10px}
+    .muted{color:var(--muted)}
+    footer{border-top:1px solid #1a1a1a;padding:24px 0;color:#9a9a9a;margin-top:40px}
+    @media(min-width:768px){.gallery{grid-template-columns:repeat(2,1fr)}}
+  </style>
+</head>
+<body>
+  <header>
+    <div class="container topbar">
+      <div class="brand">Parthian Contractors LTD</div>
+      <nav aria-label="Primary">
+        <ul>
+          <li><a href="index.html">Home</a></li>
+          <li><a href="about.html">About</a></li>
+          <li><a href="gallery.html">Gallery</a></li>
+          <li><a href="contact.html">Contact</a></li>
+        </ul>
+      </nav>
+    </div>
+  </header>
+
+  <main id="app" class="container" tabindex="-1" aria-live="polite">
+    <template v-if="project">
+      <h1>{{ project.title }}</h1>
+      <p class="muted">{{ project.description }}</p>
+
+      <section class="gallery" aria-label="Project images">
+        <figure v-for="(img, idx) in project.images" :key="idx">
+          <picture>
+            <source :srcset="img.avif" type="image/avif">
+            <source :srcset="img.webp" type="image/webp">
+            <img :src="img.webp" :alt="img.alt" width="1000" height="700" loading="lazy">
+          </picture>
+          <figcaption v-if="img.caption">{{ img.caption }}</figcaption>
+        </figure>
+      </section>
+    </template>
+    <p v-else class="muted">Project not found.</p>
+  </main>
+
+  <footer role="contentinfo">
+    <div class="container">
+      <small>© <span id="year"></span> Parthian Contractors LTD.</small>
+    </div>
+  </footer>
+
+  <script defer src="https://unpkg.com/vue@3/dist/vue.global.prod.js"></script>
+  <script defer src="assets/js/projects.data.js"></script>
+  <script defer>
+    document.getElementById('year').textContent = new Date().getFullYear();
+    const getId = () => new URLSearchParams(location.search).get('id');
+    window.addEventListener('DOMContentLoaded', function(){
+      const { createApp } = Vue;
+      createApp({
+        data(){
+          const id = getId();
+          const match = (window.PROJECTS || []).find(p => p.id === id);
+          return { project: match || null };
+        }
+      }).mount('#app');
+    });
+  </script>
+</body>
+</html> 
