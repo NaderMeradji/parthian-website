@@ -27,7 +27,7 @@
 
     @media(max-width:767px){
       nav{display:none}
-      nav.open{display:block;background:#fff;border-bottom:1px solid var(--line);margin:0 -20px;padding:8px 20px}
+      nav.open{display:block;background:#fff;border-bottom:1px solid var(--line);padding:8px 0}
       nav ul{flex-direction:column;padding:6px 0}
       .topbar{gap:10px}
     }
@@ -101,13 +101,13 @@
       </section>
 
       <section class="sections" aria-label="Overview">
-        <div>
-          <h2 class="visually-hidden">Introduction</h2>
-          <p class="muted">Parthian Contractors LTD specialises in high‑end renovations, new builds, and bespoke interiors across the UK. Trusted partners for architects, designers, and discerning clients.</p>
-        </div>
 
         <div>
           <h2>Core services</h2>
+          <div>
+            <h2 class="visually-hidden">Introduction</h2>
+            <p class="muted">Parthian Contractors LTD specialises in high‑end renovations, new builds, and bespoke interiors across the UK. Trusted partners for architects, designers, and discerning clients.</p>
+          </div>
           <div class="card-grid" aria-live="polite">
             <a v-for="s in services" :key="s.title" class="card" href="gallery.html">
               <h3>{{ s.title }}</h3>
