@@ -9,78 +9,111 @@
   <link rel="preconnect" href="https://placehold.co" crossorigin>
   <link rel="dns-prefetch" href="https://unpkg.com">
   <link rel="dns-prefetch" href="https://placehold.co">
-  <link rel="preload" href="https://unpkg.com/floating-vue@2.0.0-beta.24/dist/style.css" as="style" onload="this.rel='stylesheet'">
-  <noscript><link rel="stylesheet" href="https://unpkg.com/floating-vue@2.0.0-beta.24/dist/style.css"></noscript>
   <style>
-    :root{--bg:#0b0b0b;--fg:#ffffff;--muted:#cfcfcf;--max:1200px;--pad:20px;--font: ui-sans-serif, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial}
+    :root{--bg:#ffffff;--fg:#0b0b0b;--muted:#6b6b6b;--line:#e6e6e6;--max:1200px;--pad:20px;--font: ui-sans-serif, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial}
     html,body{margin:0;padding:0;background:var(--bg);color:var(--fg);font-family:var(--font)}
     a{color:var(--fg);text-decoration:none}
     .container{max-width:var(--max);margin:0 auto;padding:0 var(--pad)}
-    .topbar{display:flex;align-items:center;justify-content:space-between;padding:16px 0;border-bottom:1px solid #1a1a1a}
+    .topbar{display:flex;align-items:center;justify-content:space-between;padding:16px 0;border-bottom:1px solid var(--line)}
     .brand{font-weight:600;letter-spacing:.08em;text-transform:uppercase}
+    .menu-btn{display:inline-flex;align-items:center;gap:8px;border:1px solid var(--line);background:#fff;padding:8px 10px}
     nav ul{display:flex;gap:18px;list-style:none;margin:0;padding:0}
+    @media(max-width:767px){nav{display:none}nav.open{display:block}nav ul{flex-direction:column;padding:12px 0}.menu-btn{display:inline-flex}}
+    @media(min-width:768px){.menu-btn{display:none}nav{display:block !important}}
     main{padding:32px 0}
     h1{font-size:clamp(28px,6vw,44px);margin:0 0 12px}
     .grid{display:grid;grid-template-columns:1fr;gap:16px;margin-top:16px}
-    .card{display:block;border:1px solid #1a1a1a;background:#0f0f0f}
+    .card{display:block;border:1px solid var(--line);background:#fafafa}
     .card .body{padding:12px 14px}
     .muted{color:var(--muted)}
-    footer{border-top:1px solid #1a1a1a;padding:24px 0;color:#9a9a9a;margin-top:40px}
+    footer{border-top:1px solid var(--line);padding:24px 0;color:#777;margin-top:40px}
     @media(min-width:768px){.grid{grid-template-columns:repeat(3,1fr)}}
+
+    /* Lightbox */
+    .lightbox{position:fixed;inset:0;background:rgba(0,0,0,.85);display:flex;align-items:center;justify-content:center;padding:20px;z-index:1000}
+    .lightbox img{max-width:90vw;max-height:90vh}
+    .lightbox button{position:absolute;top:12px;right:12px;background:#fff;border:1px solid #ddd;padding:8px 10px}
   </style>
 </head>
 <body>
-  <header>
-    <div class="container topbar">
-      <div class="brand">Parthian Contractors LTD</div>
-      <nav aria-label="Primary">
-        <ul>
-          <li><a href="index.html">Home</a></li>
-          <li><a href="about.html">About</a></li>
-          <li><a href="gallery.html" aria-current="page">Gallery</a></li>
-          <li><a href="contact.html">Contact</a></li>
-        </ul>
-      </nav>
-    </div>
-  </header>
+  <div id="app">
+    <header>
+      <div class="container topbar">
+        <div class="brand">Parthian Contractors LTD</div>
+        <button class="menu-btn" @click="isNavOpen=!isNavOpen" :aria-expanded="isNavOpen.toString()" aria-controls="primary-nav">Menu</button>
+        <nav id="primary-nav" :class="{open:isNavOpen}" aria-label="Primary">
+          <ul>
+            <li><a href="index.html">Home</a></li>
+            <li><a href="about.html">About</a></li>
+            <li><a href="gallery.html" aria-current="page">Gallery</a></li>
+            <li><a href="contact.html">Contact</a></li>
+          </ul>
+        </nav>
+      </div>
+    </header>
 
-  <main id="app" class="container" tabindex="-1">
-    <h1>Projects</h1>
-    <p class="muted">A selection of recent work.</p>
+    <main class="container" tabindex="-1">
+      <h1>Projects</h1>
+      <p class="muted">A selection of recent work.</p>
 
-    <section class="grid" aria-label="Project list">
-      <a v-for="p in projects" :key="p.id" class="card" :href="`project.html?id=${p.id}`" v-tooltip="'Open project'">
-        <picture>
-          <source :srcset="p.thumbAvif" type="image/avif">
-          <source :srcset="p.thumbWebp" type="image/webp">
-          <img :src="p.thumbWebp" :alt="p.title" width="600" height="400" loading="lazy">
+      <section class="grid" aria-label="Project list">
+        <a v-for="p in projects" :key="p.id" class="card" :href="`project.html?id=${p.id}`" @click.prevent="openLightbox(p)">
+          <picture>
+            <source :srcset="p.thumbAvif" type="image/avif">
+            <source :srcset="p.thumbWebp" type="image/webp">
+            <img :src="p.thumbWebp" :alt="p.title" width="600" height="400" loading="lazy">
+          </picture>
+          <div class="body">
+            <h3 style="margin:0 0 6px">{{ p.title }}</h3>
+            <p class="muted" style="margin:0">{{ p.subtitle }}</p>
+          </div>
+        </a>
+      </section>
+    </main>
+
+    <footer role="contentinfo">
+      <div class="container">
+        <small>© <span>{{ year }}</span> Parthian Contractors LTD.</small>
+      </div>
+    </footer>
+
+    <section v-if="lightboxOpen" class="lightbox" role="dialog" aria-modal="true" @click.self="closeLightbox">
+      <button @click="closeLightbox" aria-label="Close">Close</button>
+      <div>
+        <picture v-if="activeProject">
+          <source :srcset="activeProject.thumbAvif" type="image/avif">
+          <source :srcset="activeProject.thumbWebp" type="image/webp">
+          <img :src="activeProject.thumbWebp" :alt="activeProject.title">
         </picture>
-        <div class="body">
-          <h3 style="margin:0 0 6px">{{ p.title }}</h3>
-          <p class="muted" style="margin:0">{{ p.subtitle }}</p>
-        </div>
-      </a>
+        <div style="color:#fff;margin-top:8px;text-align:center">{{ activeProject?.title }}</div>
+        <div style="text-align:center;margin-top:8px"><a :href="`project.html?id=${activeProject?.id}`" style="color:#fff;text-decoration:underline">View project</a></div>
+      </div>
     </section>
-  </main>
-
-  <footer role="contentinfo">
-    <div class="container">
-      <small>© <span id="year"></span> Parthian Contractors LTD.</small>
-    </div>
-  </footer>
+  </div>
 
   <script defer src="https://unpkg.com/vue@3/dist/vue.global.prod.js"></script>
-  <script defer src="https://unpkg.com/floating-vue@2.0.0-beta.24/dist/floating-vue.min.js"></script>
   <script defer src="assets/js/projects.data.js"></script>
   <script defer>
-    document.getElementById('year').textContent = new Date().getFullYear();
     window.addEventListener('DOMContentLoaded', function(){
       const { createApp } = Vue;
-      const app = createApp({
-        data(){ return { projects: window.PROJECTS || [] } }
-      });
-      if (window.FloatingVue) app.use(window.FloatingVue);
-      app.mount('#app');
+      createApp({
+        data(){
+          return {
+            isNavOpen:false,
+            year: new Date().getFullYear(),
+            projects: window.PROJECTS || [],
+            lightboxOpen: false,
+            activeProject: null
+          }
+        },
+        methods:{
+          openLightbox(p){ this.activeProject = p; this.lightboxOpen = true; },
+          closeLightbox(){ this.lightboxOpen = false; this.activeProject = null; }
+        },
+        mounted(){
+          window.addEventListener('keydown', (e)=>{ if(e.key==='Escape' && this.lightboxOpen) this.closeLightbox(); });
+        }
+      }).mount('#app');
     });
   </script>
 </body>

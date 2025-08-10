@@ -9,137 +9,151 @@
   <link rel="preconnect" href="https://placehold.co" crossorigin>
   <link rel="dns-prefetch" href="https://unpkg.com">
   <link rel="dns-prefetch" href="https://placehold.co">
-  <meta name="color-scheme" content="light dark">
+  <meta name="color-scheme" content="light">
   <style>
-    /* Critical, minimal CSS (mobile-first) */
-    :root{--bg:#0b0b0b;--fg:#ffffff;--muted:#cfcfcf;--accent:#ffffff;--max:1200px;--pad:20px;--font: ui-sans-serif, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, "Apple Color Emoji", "Segoe UI Emoji"}
-    html,body{margin:0;padding:0;background:var(--bg);color:var(--fg);font-family:var(--font);-webkit-font-smoothing:antialiased;}
+    :root{--bg:#ffffff;--fg:#0b0b0b;--muted:#6b6b6b;--line:#e6e6e6;--max:1200px;--pad:20px;--font: ui-sans-serif, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial}
+    html,body{margin:0;padding:0;background:var(--bg);color:var(--fg);font-family:var(--font)}
     a{color:var(--fg);text-decoration:none}
-    a:focus,button:focus{outline:2px solid var(--fg);outline-offset:2px}
+    a:focus,button:focus{outline:2px solid #000;outline-offset:2px}
     img{max-width:100%;height:auto;display:block}
-    header,footer{border-color:#1a1a1a}
     .container{max-width:var(--max);margin:0 auto;padding:0 var(--pad)}
-    .topbar{display:flex;align-items:center;justify-content:space-between;padding:16px 0;border-bottom:1px solid #1a1a1a}
+    .topbar{display:flex;align-items:center;justify-content:space-between;padding:14px 0;border-bottom:1px solid var(--line)}
     .brand{font-weight:600;letter-spacing:.08em;text-transform:uppercase}
+    .menu-btn{display:inline-flex;align-items:center;gap:8px;border:1px solid var(--line);background:#fff;padding:8px 10px}
     nav ul{display:flex;gap:18px;list-style:none;margin:0;padding:0}
     nav a{opacity:.9}
     nav a:hover{opacity:1}
 
-    .hero{display:grid;gap:16px;padding:56px 0}
+    /* Mobile nav */
+    @media(max-width:767px){
+      nav{display:none}
+      nav.open{display:block}
+      nav ul{flex-direction:column;padding:12px 0}
+      .topbar{gap:10px}
+    }
+
+    .hero{display:grid;gap:16px;padding:48px 0}
     .hero h1{font-size:clamp(28px,6vw,48px);line-height:1.1;margin:0 0 8px}
-    .hero p{color:var(--muted);max-width:700px;margin:0}
-    .hero .media{border:1px solid #1a1a1a}
+    .hero p{color:var(--muted);max-width:70ch;margin:0}
+    .hero .media{border:1px solid var(--line);background:#f6f6f6}
 
     .sections{display:grid;gap:48px;padding:24px 0 64px}
     .card-grid{display:grid;grid-template-columns:1fr;gap:16px}
-    .card{border:1px solid #1a1a1a;padding:16px;background:#0f0f0f}
+    .card{border:1px solid var(--line);padding:16px;background:#fafafa}
     .card h3{margin:0 0 8px;font-size:18px}
     .muted{color:var(--muted)}
 
     .cta{display:flex;flex-direction:column;gap:8px;align-items:flex-start}
-    .btn{display:inline-block;border:1px solid #1a1a1a;padding:12px 16px;background:#111;color:#fff}
-    .btn:hover{background:#151515}
+    .btn{display:inline-block;border:1px solid var(--line);padding:12px 16px;background:#f3f3f3;color:#000}
+    .btn:hover{background:#ececec}
 
-    footer{border-top:1px solid #1a1a1a;padding:24px 0;color:#9a9a9a}
+    footer{border-top:1px solid var(--line);padding:24px 0;color:#777}
 
     .visually-hidden{position:absolute !important;width:1px;height:1px;margin:-1px;border:0;padding:0;clip:rect(0 0 0 0);overflow:hidden;white-space:nowrap}
 
     @media(min-width:768px){
       .hero{grid-template-columns:1.2fr .8fr;align-items:center}
       .card-grid{grid-template-columns:repeat(3,1fr)}
+      .menu-btn{display:none}
+      nav{display:block !important}
     }
   </style>
 </head>
 <body>
-  <a href="#main" class="visually-hidden">Skip to content</a>
-  <header role="banner">
-    <div class="container topbar" aria-label="Top navigation">
-      <div class="brand">Parthian Contractors LTD</div>
-      <nav aria-label="Primary">
-        <ul>
-          <li><a href="index.html" aria-current="page">Home</a></li>
-          <li><a href="about.html">About</a></li>
-          <li><a href="gallery.html">Gallery</a></li>
-          <li><a href="contact.html">Contact</a></li>
-        </ul>
-      </nav>
-    </div>
-  </header>
+  <div id="app">
+    <a href="#main" class="visually-hidden">Skip to content</a>
+    <header role="banner">
+      <div class="container topbar" aria-label="Top navigation">
+        <div class="brand">Parthian Contractors LTD</div>
+        <button class="menu-btn" @click="isNavOpen=!isNavOpen" :aria-expanded="isNavOpen.toString()" aria-controls="primary-nav">
+          <span>Menu</span>
+        </button>
+        <nav id="primary-nav" :class="{open:isNavOpen}" aria-label="Primary">
+          <ul>
+            <li><a href="index.html" aria-current="page">Home</a></li>
+            <li><a href="about.html">About</a></li>
+            <li><a href="gallery.html">Gallery</a></li>
+            <li><a href="contact.html">Contact</a></li>
+          </ul>
+        </nav>
+      </div>
+    </header>
 
-  <main id="main" class="container" tabindex="-1">
-    <section class="hero" aria-label="Hero">
-      <div>
-        <h1>Luxury construction. Meticulous execution.</h1>
-        <p>We deliver refined residential and commercial spaces with uncompromising craftsmanship, discretion, and reliability.</p>
-        <div class="cta" style="margin-top:16px">
-          <a class="btn" href="contact.html">Call for a consultation</a>
-          <span class="muted">Gzip-ready, fast by design.</span>
+    <main id="main" class="container" tabindex="-1">
+      <section class="hero" aria-label="Hero">
+        <div>
+          <h1>Luxury construction. Meticulous execution.</h1>
+          <p>We deliver refined residential and commercial spaces with uncompromising craftsmanship, discretion, and reliability.</p>
+          <div class="cta" style="margin-top:16px">
+            <a class="btn" href="contact.html">Call for a consultation</a>
+            <span class="muted">Fast, lightweight, and accessible.</span>
+          </div>
         </div>
-      </div>
-      <div class="media" aria-hidden="true">
-        <img src="https://placehold.co/960x640/111/FFF.webp?text=Parthian+Contractors" width="960" height="640" alt="" loading="eager" />
-      </div>
-    </section>
-
-    <section class="sections" aria-label="Overview">
-      <div>
-        <h2 class="visually-hidden">Introduction</h2>
-        <p class="muted">Parthian Contractors LTD specialises in high‑end renovations, new builds, and bespoke interiors across the UK. Trusted partners for architects, designers, and discerning clients.</p>
-      </div>
-
-      <div>
-        <h2>Core services</h2>
-        <div id="services" class="card-grid" aria-live="polite"></div>
-      </div>
-
-      <div>
-        <h2>Selected work</h2>
-        <div class="card-grid">
-          <a class="card" href="project.html?id=chelsea-townhouse">
-            <h3>Chelsea Townhouse</h3>
-            <p class="muted">Full interior remaster — marble, custom joinery</p>
-          </a>
-          <a class="card" href="project.html?id=mayfair-penthouse">
-            <h3>Mayfair Penthouse</h3>
-            <p class="muted">Complete refurbishment — premium finishes</p>
-          </a>
-          <a class="card" href="gallery.html">
-            <h3>View all projects</h3>
-            <p class="muted">Explore the gallery</p>
-          </a>
+        <div class="media" aria-hidden="true">
+          <img src="https://placehold.co/960x640/EEE/111.webp?text=Parthian+Contractors" width="960" height="640" alt="" loading="eager" />
         </div>
+      </section>
+
+      <section class="sections" aria-label="Overview">
+        <div>
+          <h2 class="visually-hidden">Introduction</h2>
+          <p class="muted">Parthian Contractors LTD specialises in high‑end renovations, new builds, and bespoke interiors across the UK. Trusted partners for architects, designers, and discerning clients.</p>
+        </div>
+
+        <div>
+          <h2>Core services</h2>
+          <div class="card-grid" aria-live="polite">
+            <a v-for="s in services" :key="s.title" class="card" href="gallery.html">
+              <h3>{{ s.title }}</h3>
+              <p class="muted">{{ s.desc }}</p>
+            </a>
+          </div>
+        </div>
+
+        <div>
+          <h2>Selected work</h2>
+          <div class="card-grid">
+            <a class="card" href="project.html?id=chelsea-townhouse">
+              <h3>Chelsea Townhouse</h3>
+              <p class="muted">Full interior remaster — marble, custom joinery</p>
+            </a>
+            <a class="card" href="project.html?id=mayfair-penthouse">
+              <h3>Mayfair Penthouse</h3>
+              <p class="muted">Complete refurbishment — premium finishes</p>
+            </a>
+            <a class="card" href="gallery.html">
+              <h3>View all projects</h3>
+              <p class="muted">Explore the gallery</p>
+            </a>
+          </div>
+        </div>
+      </section>
+    </main>
+
+    <footer role="contentinfo">
+      <div class="container">
+        <small>© <span>{{ year }}</span> Parthian Contractors LTD. All rights reserved.</small>
       </div>
-    </section>
-  </main>
+    </footer>
+  </div>
 
-  <footer role="contentinfo">
-    <div class="container">
-      <small>© <span id="year"></span> Parthian Contractors LTD. All rights reserved.</small>
-    </div>
-  </footer>
-
-  <script>
-    // Minimal, non-blocking hydration for services list and year
+  <script defer src="https://unpkg.com/vue@3/dist/vue.global.prod.js"></script>
+  <script defer>
     window.addEventListener('DOMContentLoaded', function(){
-      const services = [
-        { title: 'Luxury Renovations', desc: 'Discerning refurbishments for apartments, townhouses, and estates.' },
-        { title: 'New Build', desc: 'Ground‑up construction with rigorous project control and detail.' },
-        { title: 'Bespoke Interiors', desc: 'Custom joinery, stone, and metalwork crafted to specification.' }
-      ];
-      const wrap = document.getElementById('services');
-      if (wrap) {
-        const frag = document.createDocumentFragment();
-        services.forEach(s => {
-          const a = document.createElement('a');
-          a.className = 'card';
-          a.href = 'gallery.html';
-          a.innerHTML = `<h3>${s.title}</h3><p class="muted">${s.desc}</p>`;
-          frag.appendChild(a);
-        });
-        wrap.appendChild(frag);
-      }
-      const y = document.getElementById('year');
-      if (y) y.textContent = new Date().getFullYear();
+      const { createApp } = Vue;
+      createApp({
+        data(){
+          return {
+            isNavOpen: false,
+            year: new Date().getFullYear(),
+            services: [
+              { title: 'Luxury Renovations', desc: 'Discerning refurbishments for apartments, townhouses, and estates.' },
+              { title: 'New Build', desc: 'Ground‑up construction with rigorous project control and detail.' },
+              { title: 'Bespoke Interiors', desc: 'Custom joinery, stone, and metalwork crafted to specification.' }
+            ]
+          }
+        }
+      }).mount('#app');
     });
   </script>
 </body>
